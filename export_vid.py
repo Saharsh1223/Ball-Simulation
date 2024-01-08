@@ -1,10 +1,10 @@
 from moviepy.editor import VideoFileClip, AudioFileClip, TextClip, CompositeVideoClip
-#from moviepy.config import change_settings
 import os
 
-#change_settings({"IMAGEMAGICK_BINARY": "/path/to/convert"})
-
-def join_video_and_audio(video_path, audio_path, output_path, new_resolution=(1080, 1920), text="Your Text Here", text_position=(0, 0.05)):
+def join_video_and_audio(video_path, audio_path, output_path, new_resolution=(1080, 1920), text1="A Ball but every time it\nbounces, it gets bigger.", text1_position=(0.5, 0.18), text2="@SaharshDev", text2_position=(0.5, 0.75)):
+    
+    font_path="roboto-mono.ttf"
+    
     # Load video and audio clips
     video_clip = VideoFileClip(video_path)
     audio_clip = AudioFileClip(audio_path)
@@ -15,13 +15,27 @@ def join_video_and_audio(video_path, audio_path, output_path, new_resolution=(10
     # Set audio for the video clip
     video_clip = video_clip.set_audio(audio_clip)
 
-    # Add text to the video
-    txt_clip = TextClip(text, fontsize=40, color='white', bg_color='black')
-    txt_clip = txt_clip.set_position(text_position).set_duration(video_clip.duration)
-    video_clip = video_clip.set_audio(audio_clip).set_duration(audio_clip.duration).overlay_x=0
+    # Add the first text to the video
+    txt_clip1 = TextClip(text1, fontsize=60, color='white', bg_color='black', font=font_path)
 
-    # Composite the video with the text
-    video_clip = CompositeVideoClip([video_clip, txt_clip])
+    # Calculate the y-axis position for the first text in pixels
+    y_position_pixels1 = int(text1_position[1] * video_clip.size[1])
+
+    # Set the position of the first text relative to the center
+    txt_clip1 = txt_clip1.set_position(('center', y_position_pixels1), relative=False).set_duration(video_clip.duration)
+
+    # Add the second text to the video
+    txt_clip2 = TextClip(text2, fontsize=40, color='white', bg_color='black', font=font_path)
+
+    # Calculate the y-axis position for the second text in pixels
+    y_position_pixels2 = int(text2_position[1] * video_clip.size[1])
+
+    # Set the position of the second text relative to the center
+    txt_clip2 = txt_clip2.set_position(('center', y_position_pixels2), relative=False).set_duration(video_clip.duration).set_opacity(0.5)
+
+    
+    # Composite the video with both texts
+    video_clip = CompositeVideoClip([video_clip, txt_clip1, txt_clip2])
 
     # Write the video to the output file
     video_clip.write_videofile(output_path, codec='libx264', audio_codec='aac')

@@ -2,7 +2,7 @@ import pygame
 import sys
 import random
 import math
-import os
+import cv2
 import record_audio
 import export_vid
 import vidmaker
@@ -15,7 +15,7 @@ WIDTH, HEIGHT = 495, 880
 FPS = 60
 GRAVITY = 0.5
 BALL_RADIUS = 10
-CIRCLE_RADIUS = 170
+CIRCLE_RADIUS = 160
 DISPLACEMENT = 2  # Adjust as needed
 SIZE_INCREASE = 1  # Adjust as needed
 REFLECTION_FORCE = 12  # Adjust as needed
@@ -97,10 +97,7 @@ while True:
             audio_file = "output.wav"
             output_file = "output_upgraded_resolution_with_text.mp4"
 
-            text_value = "Test text here"
-            text_position = (0, 0.05)
-
-            export_vid.join_video_and_audio(video_file, audio_file, output_file, text=text_value, text_position=text_position)
+            export_vid.join_video_and_audio(video_file, audio_file, output_file)
             
             pygame.quit()
             sys.exit()
@@ -175,10 +172,7 @@ while True:
                 audio_file = "output.wav"
                 output_file = "output_upgraded_resolution_with_text.mp4"
 
-                text_value = "Your Custom Text Here"
-                text_position = (0, 0.05)
-
-                export_vid.join_video_and_audio(video_file, audio_file, output_file, text=text_value, text_position=text_position)
+                export_vid.join_video_and_audio(video_file, audio_file, output_file)
                 
                 pygame.quit()
                 sys.exit()
@@ -207,7 +201,7 @@ while True:
     pygame.draw.circle(screen, current_color, (int(ball_x), int(ball_y)), int(ball_radius))
 
     # Display collision count just below the circle with padding
-    padding = 20  # Adjust the padding value as needed
+    padding = 35  # Adjust the padding value as needed
     text = font.render(f'Collisions: {collisions}', True, WHITE)
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + CIRCLE_RADIUS + padding))
     screen.blit(text, text_rect)
@@ -224,5 +218,8 @@ while True:
 
     # Cap the frame rate
     clock.tick(FPS)
+
+    #frame = 
+    #frame = cv2.resize(frame, (1080, 1920))
 
     video.update(pygame.surfarray.pixels3d(screen).swapaxes(0, 1), inverted=False)
